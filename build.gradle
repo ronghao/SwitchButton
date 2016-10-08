@@ -2,9 +2,9 @@
 
 buildscript {
     repositories {
+        maven { url "https://dl.bintray.com/haohao/maven/" }
         jcenter()
-        mavenCentral()
-//        maven { url "https://jitpack.io" }
+//        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.3'

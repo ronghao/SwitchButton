@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    maven {
+        url 'https://dl.bintray.com/haohao/maven/'
+    }
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -25,6 +31,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:23.4.0'
-//    compile 'com.haohao:switchbutton:1.0.0'
-    compile project(path: ':switchbutton')
+    compile 'com.haohao:switchbutton:1.0.1'
+//    compile project(path: ':switchbutton')
 }
