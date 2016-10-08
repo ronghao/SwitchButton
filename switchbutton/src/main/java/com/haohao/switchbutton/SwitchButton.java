@@ -2,6 +2,7 @@ package com.haohao.switchbutton;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,7 +10,6 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
@@ -38,11 +38,14 @@ public class SwitchButton extends View {
     private ViewParent mParent;
     private boolean isChange = false;
     private long TIMEOUT = 100;
-    private boolean isStartAnimation;//是否启动动画，
+    private boolean isTouchMove;//手按下移动
+    private boolean isStartAnimation;//手抬起后播放动画
     private float MOVESTAP = 2f;
 
     private IButtonClickListener mListener;
-    private boolean isShowAnimation = true;
+    private boolean isImmediately = true;
+    private int switchBg = R.drawable.switch_bg;
+    private int switchCursor = R.drawable.switch_white;
 
     public SwitchButton(Context context) {
         this(context, null);
@@ -50,11 +53,13 @@ public class SwitchButton extends View {
 
     public SwitchButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initAttrs(attrs);
         init();
     }
 
     public SwitchButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initAttrs(attrs);
         init();
     }
 
@@ -66,12 +71,22 @@ public class SwitchButton extends View {
         // 来存储测量得到的宽度和高度值，如果没有这么去做会触发异常IllegalStateException。
     }
 
+
+    private void initAttrs(AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.switchbutton);
+            switchBg = a.getResourceId(R.styleable.switchbutton_switchbackground, R.drawable.switch_bg);
+            switchCursor = a.getResourceId(R.styleable.switchbutton_switchcursor, R.drawable.switch_white);
+            a.recycle();
+        }
+    }
+
     //初始化三幅图片
     private void init() {
         Resources res = getResources();
-        mSwitch_off = BitmapFactory.decodeResource(res, R.drawable.switch_bg);
-        mSwitch_on = BitmapFactory.decodeResource(res, R.drawable.switch_bg);
-        mSwitch_thumb = BitmapFactory.decodeResource(res, R.drawable.switch_white);
+        mSwitch_off = BitmapFactory.decodeResource(res, switchBg);
+        mSwitch_on = BitmapFactory.decodeResource(res, switchBg);
+        mSwitch_thumb = BitmapFactory.decodeResource(res, switchCursor);
 
         mBgWidth = mSwitch_on.getWidth();//背景宽度
         mBgHeight = mSwitch_on.getHeight();//背景高度
@@ -89,7 +104,7 @@ public class SwitchButton extends View {
      * @param on 是否打开开关 打开为true 关闭为false
      */
     public void setStatus(boolean on) {
-        isShowAnimation = true;
+        isImmediately = false;
         mSwitchStatus = (on ? SWITCH_ON : SWITCH_OFF);
         mMoveX = mBgWidth - mThumbWidth;
         if (mSwitchStatus == 0) {
@@ -100,15 +115,15 @@ public class SwitchButton extends View {
     }
 
     /**
-     * 设置开关的状态
+     * 设置开关的状态,第一次启动，快速打开无动画
      *
      * @param on 是否打开开关 打开为true 关闭为false
      */
     public void setStatusimmediately(boolean on) {
-        isShowAnimation = false;
+        isImmediately = true;
         mSwitchStatus = (on ? SWITCH_ON : SWITCH_OFF);
         mMoveX = mBgWidth - mThumbWidth;
-        if (mSwitchStatus == 0) {
+        if (mSwitchStatus == SWITCH_OFF) {
             isStartAnimation = true;
         }
 
@@ -120,20 +135,23 @@ public class SwitchButton extends View {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                isTouchMove = true;
                 attemptClaimDrag();
-                Log.e("pos_down", "X:" + event.getX());
+                //Log.i("pos_down", "X:" + event.getX());
                 mSrcX = (int) event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
                 mDstX = event.getX();
-                Log.e("pos_move", "X:" + (mSrcX - mDstX));
+                //Log.i("pos_move", "X:" + (mSrcX - mDstX));
                 if (mSrcX == mDstX)
                     return true;
                 mMoveX += mDstX - mSrcX;
+                //Log.i("mMoveX", mMoveX + "");
                 mSrcX = mDstX;
                 break;
             case MotionEvent.ACTION_UP:
-                Log.e("pos_up", "X:" + event.getX());
+                //Log.i("pos_up", "X:" + event.getX());
+                isTouchMove = false;
                 long time = event.getEventTime() - event.getDownTime();
                 isStartAnimation = true;
                 if (time < TIMEOUT) {
@@ -162,40 +180,40 @@ public class SwitchButton extends View {
         // 绘制按钮
         mMoveX = Math.min(mMoveX, mMaxMoveWidth);
         mMoveX = Math.max(mMoveX, mMinMoveWidth);
-        if (isShowAnimation && isStartAnimation) {
-            canvas.save();
-            Log.e("onDrawisStartAnimation", isStartAnimation + "");
-            Log.e("onDrawisStSwitchStatus", mSwitchStatus + "");
-            if (mSwitchStatus == SWITCH_OFF) {
-                if (mMoveX > mMinMoveWidth) {
-                    float i = (mMoveX - mMinMoveWidth) / 4;
-                    float move = Math.max(i, MOVESTAP);
-                    mMoveX -= move;
+        if (!isTouchMove) {
+            if (!isImmediately && isStartAnimation) {
+                if (mSwitchStatus == SWITCH_OFF) {
+                    if (mMoveX > mMinMoveWidth) {
+                        float i = (mMoveX - mMinMoveWidth) / 4;
+                        float move = Math.max(i, MOVESTAP);
+                        mMoveX -= move;
+                    } else {
+                        mMoveX = mMinMoveWidth;
+                        isStartAnimation = false;
+                    }
                 } else {
+                    if (mMoveX < mMaxMoveWidth) {
+                        float i = (mMaxMoveWidth - mMoveX) / 4;
+                        float move = Math.max(i, MOVESTAP);
+                        mMoveX += move;
+
+                    } else {
+                        mMoveX = mMaxMoveWidth;
+                        isStartAnimation = false;
+                    }
+                }
+                postInvalidate();
+            } else {
+                if (mSwitchStatus == SWITCH_OFF) {
                     mMoveX = mMinMoveWidth;
                     isStartAnimation = false;
-                }
-            } else {
-                if (mMoveX < mMaxMoveWidth) {
-                    float i = (mMaxMoveWidth - mMoveX) / 4;
-                    float move = Math.max(i, MOVESTAP);
-                    mMoveX += move;
-
                 } else {
                     mMoveX = mMaxMoveWidth;
                     isStartAnimation = false;
                 }
+                isImmediately = false;
+                postInvalidate();
             }
-            postInvalidate();
-        } else {
-            if (mSwitchStatus == SWITCH_OFF) {
-                mMoveX = mMinMoveWidth;
-                isStartAnimation = false;
-            } else {
-                mMoveX = mMaxMoveWidth;
-                isStartAnimation = false;
-            }
-            postInvalidate();
         }
 
         //绘制底部图片
@@ -205,12 +223,8 @@ public class SwitchButton extends View {
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         mPaintBg.setColorFilter(f);
         canvas.drawBitmap(mSwitch_on, 0, 0, mPaintBg);
-
+        //Log.i("mMoveX", mMoveX + "");
         canvas.drawBitmap(mSwitch_thumb, mMoveX, mPadding, mPaint);
-
-        if (isShowAnimation && isStartAnimation){
-            canvas.restore();
-        }
     }
 
     //阻止父组件对事件的响应，父组件不能响应 action包括action_up action_down action_move

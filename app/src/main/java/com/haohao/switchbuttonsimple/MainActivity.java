@@ -22,10 +22,11 @@ public class MainActivity extends FragmentActivity {
 
     private void init() {
         mSwitchButton = (SwitchButton) findViewById(R.id.switchbutton);
+        mSwitchButton.setStatusimmediately(true);
         mSwitchButton.setOnSwitchListener(new SwitchButton.IButtonClickListener() {
             @Override
             public void click(int status) {
-                Toast.makeText(MainActivity.this, status == 1 ? "开启" : "关闭", Toast.LENGTH_SHORT);
+                Toast.makeText(MainActivity.this, status == 1 ? "开启" : "关闭", Toast.LENGTH_SHORT).show();
             }
         });
     }
