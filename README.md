@@ -32,4 +32,4 @@ dependencies {<br>
 
 # 图片
 > + **背景图片**   ![例子](docs/switch_bg.png)
-+  **游标图片(图片纯白做了特殊处理)**  ![例子](docs/switch_white_1.png)
++  **游标图片(图片纯白做了特殊处理)**  ![例子](docs/switch_white.png)
