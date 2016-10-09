@@ -27,7 +27,9 @@ dependencies {<br>
         switchbutton:switchcursor="@drawable/switch_white" />
 
 # XML代码
-+ switchbutton:switchbackground 背景图片
-  + ![例子](docs/switch_bg.png)
-+ switchbutton:switchcursor 游标图片
-  + ![例子](docs/switch_white.png)
+> + 自定义背景图片：  *switchbutton:switchbackground*
++  自定义图片： *switchbutton:switchcursor*
+
+# 图片
+> + **背景图片**   ![例子](docs/switch_bg.png)
++  **游标图片(图片纯白做了特殊处理)**  ![例子](docs/switch_white_1.png)
