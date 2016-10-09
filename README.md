@@ -1,5 +1,5 @@
 # SwitchButton
-类似ios效果的滑动按钮
+类似ios效果的滑动按钮,支持自定义背景，动画效果，渐变效果
 
 # 示例
 ![例子](docs/show.gif)
