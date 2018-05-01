@@ -4,6 +4,12 @@
 # 示例
 ![例子](docs/show.gif)
 
+# 功能
++ 可自定义背景和游标图片
++ 动画效果：滑动动画，颜色渐变
++ 背景变灰
++ 可支持手势滑动一半退回效果
+
 
 # 项目添加方法
 在根 build.gradle中添加
@@ -25,19 +31,45 @@
         android:id="@+id/switchbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
         switchbutton:switchbackground="@drawable/switch_bg"
         switchbutton:switchcursor="@drawable/switch_white" />
 
-# XML代码
-+ 自定义背景图片：  *switchbutton:switchbackground*
-+  自定义图片： *switchbutton:switchcursor*
 
-# 图片
-+ **背景图片**   ![例子](docs/switch_bg.png)
-+  **游标图片(图片纯白做了特殊处理)**  ![例子](docs/switch_white.png)
+# Attributes
+	<attr name="switchbackground" format="reference"/>       自定义背景图片
+	<attr name="switchcursor" format="reference"/>           自定义图片
+
+# 方法简介
+|||
+|-|-|
+|setStatus|设置开启关闭|
+|setStatusImmediately|设置开启关闭(无动画)|
+|setOnSwitchChangeListener|设置滑动开关监听|
+
+# 图片示例
+|名称|图片样式|
+|-|-|
+|背景图片|![例子](docs/switch_bg_1.png)|
+|游标图片(图片纯白做了特殊处理)|![例子](docs/switch_white.png)|
+ 
+
 
 # 关于
 + 个人博客：[www.haohaohu.com](http://www.haohaohu.com/)
 + 如果你也喜欢这个库，Star一下吧，欢迎Fork
+
+# License
+
+    Copyright 2016 haohaohu
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
