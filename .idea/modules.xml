@@ -3,11 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SwitchButton.iml" filepath="$PROJECT_DIR$/SwitchButton.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SwitchButton.iml" filepath="$PROJECT_DIR$/SwitchButton.iml" />
+      <module fileurl="file://C:\code\git\SwitchButton\SwitchButton.iml" filepath="C:\code\git\SwitchButton\SwitchButton.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\code\git\SwitchButton\app\app.iml" filepath="C:\code\git\SwitchButton\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" />
-      <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" />
+      <module fileurl="file://C:\code\git\SwitchButton\switchbutton\switchbutton.iml" filepath="C:\code\git\SwitchButton\switchbutton\switchbutton.iml" />
     </modules>
   </component>
 </project>

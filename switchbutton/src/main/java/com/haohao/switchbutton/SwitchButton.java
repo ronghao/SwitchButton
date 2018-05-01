@@ -14,16 +14,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 
-
+/**
+ * 滑动按钮
+ *
+ * @author haohao(ronghao3508@gmail.com) on 2016/5/1 12:33
+ * @version v1.0
+ */
 public class SwitchButton extends View {
-    public static final String TAG = "SwitchButton1";
 
-    public static final int SWITCH_OFF = 0;//关闭状态
-    public static final int SWITCH_ON = 1;//打开状态
-    public static final int SWITCH_SCROLING = 2;//滚动状态
+    //关闭状态
+    public static final int SWITCH_OFF = 0;
+    //打开状态
+    public static final int SWITCH_ON = 1;
+    //滚动状态
+    public static final int SWITCH_SCROLING = 2;
+    //当前状态
+    private int switchStatus = SWITCH_OFF;
+
     //开关状态图
-    Bitmap mSwitch_off, mSwitch_on, mSwitch_thumb;
-    private int mSwitchStatus = SWITCH_OFF;
+    private Bitmap mSwitchBg, mSwitch_thumb;
+
     private float mSrcX = 0f, mDstX = 0f;
     private float mMoveX = 0f;
     private int mBgWidth = 0;
@@ -35,14 +45,13 @@ public class SwitchButton extends View {
     private int mPadding = 0;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);//抗锯齿
     private Paint mPaintBg = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private ViewParent mParent;
     private boolean isChange = false;
     private long TIMEOUT = 100;
     private boolean isTouchMove;//手按下移动
     private boolean isStartAnimation;//手抬起后播放动画
     private float MOVESTAP = 2f;
 
-    private IButtonClickListener mListener;
+    private OnSwitchChangeListener mListener;
     private boolean isImmediately = true;
     private int switchBg = R.drawable.switch_bg;
     private int switchCursor = R.drawable.switch_white;
@@ -65,18 +74,19 @@ public class SwitchButton extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {//方法是用来测量控价所占的大小
-        setMeasuredDimension((int) mBgWidth, (int) (mBgHeight));//0 0自己定义控件的大小
+        setMeasuredDimension(mBgWidth, mBgHeight);//0 0自己定义控件的大小
 
         //在onMeasure(int, int)中，必须调用setMeasuredDimension(int width, int height)
         // 来存储测量得到的宽度和高度值，如果没有这么去做会触发异常IllegalStateException。
     }
 
-
     private void initAttrs(AttributeSet attrs) {
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.switchbutton);
-            switchBg = a.getResourceId(R.styleable.switchbutton_switchbackground, R.drawable.switch_bg);
-            switchCursor = a.getResourceId(R.styleable.switchbutton_switchcursor, R.drawable.switch_white);
+            switchBg = a.getResourceId(R.styleable.switchbutton_switchbackground,
+                    R.drawable.switch_bg);
+            switchCursor =
+                    a.getResourceId(R.styleable.switchbutton_switchcursor, R.drawable.switch_white);
             a.recycle();
         }
     }
@@ -84,12 +94,11 @@ public class SwitchButton extends View {
     //初始化三幅图片
     private void init() {
         Resources res = getResources();
-        mSwitch_off = BitmapFactory.decodeResource(res, switchBg);
-        mSwitch_on = BitmapFactory.decodeResource(res, switchBg);
+        mSwitchBg = BitmapFactory.decodeResource(res, switchBg);
         mSwitch_thumb = BitmapFactory.decodeResource(res, switchCursor);
 
-        mBgWidth = mSwitch_on.getWidth();//背景宽度
-        mBgHeight = mSwitch_on.getHeight();//背景高度
+        mBgWidth = mSwitchBg.getWidth();//背景宽度
+        mBgHeight = mSwitchBg.getHeight();//背景高度
         mThumbWidth = mSwitch_thumb.getWidth();
         mThumbHeight = mSwitch_thumb.getHeight();
 
@@ -105,9 +114,9 @@ public class SwitchButton extends View {
      */
     public void setStatus(boolean on) {
         isImmediately = false;
-        mSwitchStatus = (on ? SWITCH_ON : SWITCH_OFF);
+        switchStatus = (on ? SWITCH_ON : SWITCH_OFF);
         mMoveX = mBgWidth - mThumbWidth;
-        if (mSwitchStatus == 0) {
+        if (switchStatus == 0) {
             isStartAnimation = true;
         }
 
@@ -119,11 +128,11 @@ public class SwitchButton extends View {
      *
      * @param on 是否打开开关 打开为true 关闭为false
      */
-    public void setStatusimmediately(boolean on) {
+    public void setStatusImmediately(boolean on) {
         isImmediately = true;
-        mSwitchStatus = (on ? SWITCH_ON : SWITCH_OFF);
+        switchStatus = (on ? SWITCH_ON : SWITCH_OFF);
         mMoveX = mBgWidth - mThumbWidth;
-        if (mSwitchStatus == SWITCH_OFF) {
+        if (switchStatus == SWITCH_OFF) {
             isStartAnimation = true;
         }
 
@@ -137,34 +146,31 @@ public class SwitchButton extends View {
             case MotionEvent.ACTION_DOWN:
                 isTouchMove = true;
                 attemptClaimDrag();
-                //Log.i("pos_down", "X:" + event.getX());
                 mSrcX = (int) event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
                 mDstX = event.getX();
-                //Log.i("pos_move", "X:" + (mSrcX - mDstX));
-                if (mSrcX == mDstX)
+                if (mSrcX == mDstX) {
                     return true;
+                }
                 mMoveX += mDstX - mSrcX;
-                //Log.i("mMoveX", mMoveX + "");
                 mSrcX = mDstX;
                 break;
             case MotionEvent.ACTION_UP:
-                //Log.i("pos_up", "X:" + event.getX());
                 isTouchMove = false;
                 long time = event.getEventTime() - event.getDownTime();
                 isStartAnimation = true;
                 if (time < TIMEOUT) {
-                    mSwitchStatus = (mSwitchStatus == SWITCH_OFF ? SWITCH_ON : SWITCH_OFF);
+                    switchStatus = (switchStatus == SWITCH_OFF ? SWITCH_ON : SWITCH_OFF);
                 } else {
                     if (event.getX() < mBgWidth / 2) {
-                        mSwitchStatus = SWITCH_OFF;
+                        switchStatus = SWITCH_OFF;
                     } else {
-                        mSwitchStatus = SWITCH_ON;
+                        switchStatus = SWITCH_ON;
                     }
                 }
                 if (mListener != null) {
-                    mListener.click(mSwitchStatus);
+                    mListener.onSwitch(switchStatus);
                 }
                 break;
             default:
@@ -182,7 +188,7 @@ public class SwitchButton extends View {
         mMoveX = Math.max(mMoveX, mMinMoveWidth);
         if (!isTouchMove) {
             if (!isImmediately && isStartAnimation) {
-                if (mSwitchStatus == SWITCH_OFF) {
+                if (switchStatus == SWITCH_OFF) {
                     if (mMoveX > mMinMoveWidth) {
                         float i = (mMoveX - mMinMoveWidth) / 4;
                         float move = Math.max(i, MOVESTAP);
@@ -196,7 +202,6 @@ public class SwitchButton extends View {
                         float i = (mMaxMoveWidth - mMoveX) / 4;
                         float move = Math.max(i, MOVESTAP);
                         mMoveX += move;
-
                     } else {
                         mMoveX = mMaxMoveWidth;
                         isStartAnimation = false;
@@ -204,7 +209,7 @@ public class SwitchButton extends View {
                 }
                 postInvalidate();
             } else {
-                if (mSwitchStatus == SWITCH_OFF) {
+                if (switchStatus == SWITCH_OFF) {
                     mMoveX = mMinMoveWidth;
                     isStartAnimation = false;
                 } else {
@@ -217,33 +222,37 @@ public class SwitchButton extends View {
         }
 
         //绘制底部图片
-
         ColorMatrix cm = new ColorMatrix();//颜色矩阵
         cm.setSaturation((mMoveX - mMinMoveWidth) / (mMaxMoveWidth - mMinMoveWidth));
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         mPaintBg.setColorFilter(f);
-        canvas.drawBitmap(mSwitch_on, 0, 0, mPaintBg);
+        canvas.drawBitmap(mSwitchBg, 0, 0, mPaintBg);
         //Log.i("mMoveX", mMoveX + "");
         canvas.drawBitmap(mSwitch_thumb, mMoveX, mPadding, mPaint);
     }
 
     //阻止父组件对事件的响应，父组件不能响应 action包括action_up action_down action_move
     private void attemptClaimDrag() {
-        mParent = getParent();
+        ViewParent mParent = getParent();
         if (mParent != null) {
             mParent.requestDisallowInterceptTouchEvent(true);
         }
     }
 
-    public int getmSwitchStatus() {
-        return mSwitchStatus;
+    public int getSwitchStatus() {
+        return switchStatus;
     }
 
-    public void setOnSwitchListener(IButtonClickListener mListener) {
+    public void setOnSwitchChangeListener(OnSwitchChangeListener mListener) {
         this.mListener = mListener;
     }
 
-    public interface IButtonClickListener {
-        void click(int status);
+    public interface OnSwitchChangeListener {
+        /**
+         * 状态变化监听
+         *
+         * @param status 1开启 0关闭
+         */
+        void onSwitch(int status);
     }
 }
