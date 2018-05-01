@@ -3,22 +3,75 @@
     xmlns:switchbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      >
     <com.haohao.switchbutton.SwitchButton
         android:id="@+id/switchbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+
         switchbutton:switchbackground="@drawable/switch_bg_1"
-        switchbutton:switchcursor="@drawable/switch_white_1" />
+        switchbutton:switchcursor="@drawable/switch_white_1"
+        />
+
+    <TextView
+        android:id="@+id/switchbutton_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="状态"
+        />
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      >
 
     <com.haohao.switchbutton.SwitchButton
         android:id="@+id/switchbutton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp" />
+        />
+
+    <TextView
+        android:id="@+id/switchbutton1_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="状态"
+        />
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      >
+    <com.haohao.switchbutton.SwitchButton
+        android:id="@+id/switchbutton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        />
+
+    <TextView
+        android:id="@+id/switchbutton2_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="状态"
+        />
+  </LinearLayout>
+
 
 </LinearLayout>

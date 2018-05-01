@@ -2,13 +2,14 @@
 类似ios效果的滑动按钮,支持自定义背景，动画效果，渐变效果
 
 # 示例
-![例子](docs/show.gif)
+![例子](docs/show1.gif)
 
 # 功能
 + 可自定义背景和游标图片
 + 动画效果：滑动动画，颜色渐变
 + 背景变灰
 + 可支持手势滑动一半退回效果
++ 支持禁用模式
 
 
 # 项目添加方法
@@ -45,13 +46,20 @@
 |setStatus|设置开启关闭|
 |setStatusImmediately|设置开启关闭(无动画)|
 |setOnSwitchChangeListener|设置滑动开关监听|
+|setSwitchEnabled|设置是否可用|
 
 # 图片示例
 |名称|图片样式|
 |-|-|
 |背景图片|![例子](docs/switch_bg_1.png)|
 |游标图片(图片纯白做了特殊处理)|![例子](docs/switch_white.png)|
- 
+
+
+# 版本
+- 1.0.1
+	- 添加不可用设置
+- 1.0.0
+	- 添加基本效果
 
 
 # 关于

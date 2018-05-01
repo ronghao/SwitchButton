@@ -28,6 +28,8 @@ public class SwitchButton extends View {
     public static final int SWITCH_ON = 1;
     //滚动状态
     public static final int SWITCH_SCROLING = 2;
+    //不可以状态
+    public static final int SWITCH_UNENABLE = 3;
     //当前状态
     private int switchStatus = SWITCH_OFF;
 
@@ -45,6 +47,7 @@ public class SwitchButton extends View {
     private int mPadding = 0;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);//抗锯齿
     private Paint mPaintBg = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     private boolean isChange = false;
     private long TIMEOUT = 100;
     private boolean isTouchMove;//手按下移动
@@ -55,6 +58,7 @@ public class SwitchButton extends View {
     private boolean isImmediately = true;
     private int switchBg = R.drawable.switch_bg;
     private int switchCursor = R.drawable.switch_white;
+    private boolean isEnable = true;
 
     public SwitchButton(Context context) {
         this(context, null);
@@ -113,6 +117,7 @@ public class SwitchButton extends View {
      * @param on 是否打开开关 打开为true 关闭为false
      */
     public void setStatus(boolean on) {
+        if (!isEnable) return;
         isImmediately = false;
         switchStatus = (on ? SWITCH_ON : SWITCH_OFF);
         mMoveX = mBgWidth - mThumbWidth;
@@ -129,6 +134,7 @@ public class SwitchButton extends View {
      * @param on 是否打开开关 打开为true 关闭为false
      */
     public void setStatusImmediately(boolean on) {
+        if (!isEnable) return;
         isImmediately = true;
         switchStatus = (on ? SWITCH_ON : SWITCH_OFF);
         mMoveX = mBgWidth - mThumbWidth;
@@ -139,8 +145,52 @@ public class SwitchButton extends View {
         postInvalidate();//更新界面，重新绘制界面
     }
 
+    /**
+     * 获取开关当前状态
+     *
+     * @return {@value SWITCH_ON,SWITCH_OFF, SWITCH_UNENABLE}
+     */
+    public int getSwitchStatus() {
+        if (!isEnable) {
+            return SWITCH_UNENABLE;
+        }
+        return switchStatus;
+    }
+
+    /**
+     * 设置事件监听
+     *
+     * @param mListener 事件监听接口
+     */
+    public void setOnSwitchChangeListener(OnSwitchChangeListener mListener) {
+        this.mListener = mListener;
+    }
+
+    /**
+     * 设置是否可用
+     *
+     * @param isEnable 可选择为true 不可选择为false
+     */
+    public void setSwitchEnabled(boolean isEnable) {
+        this.isEnable = isEnable;
+    }
+
+    /**
+     * 获取是否可用
+     *
+     * @return 可选择为true 不可选择为false
+     */
+    public boolean getSwitchEnabled() {
+        return this.isEnable;
+    }
+
+    public void toggle() {
+        setStatus(getSwitchStatus() == SWITCH_OFF);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isEnable) return true;
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -182,7 +232,6 @@ public class SwitchButton extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         // 绘制按钮
         mMoveX = Math.min(mMoveX, mMaxMoveWidth);
         mMoveX = Math.max(mMoveX, mMinMoveWidth);
@@ -222,13 +271,24 @@ public class SwitchButton extends View {
         }
 
         //绘制底部图片
-        ColorMatrix cm = new ColorMatrix();//颜色矩阵
-        cm.setSaturation((mMoveX - mMinMoveWidth) / (mMaxMoveWidth - mMinMoveWidth));
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        mPaintBg.setColorFilter(f);
-        canvas.drawBitmap(mSwitchBg, 0, 0, mPaintBg);
-        //Log.i("mMoveX", mMoveX + "");
-        canvas.drawBitmap(mSwitch_thumb, mMoveX, mPadding, mPaint);
+        if (isEnable) {
+            ColorMatrix cm = new ColorMatrix();//颜色矩阵
+            cm.setSaturation((mMoveX - mMinMoveWidth) / (mMaxMoveWidth - mMinMoveWidth));
+            ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+            mPaintBg.setColorFilter(f);
+            canvas.drawBitmap(mSwitchBg, 0, 0, mPaintBg);
+            //Log.i("mMoveX", mMoveX + "");
+            canvas.drawBitmap(mSwitch_thumb, mMoveX, mPadding, mPaint);
+        } else {
+            ColorMatrix cm = new ColorMatrix();//颜色矩阵
+            cm.setSaturation(0.01f);
+            ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+            mPaintBg.setColorFilter(f);
+            mPaintBg.setAntiAlias(true);//边缘平滑处理
+            canvas.drawBitmap(mSwitchBg, 0, 0, mPaintBg);
+            //Log.i("mMoveX", mMoveX + "");
+            canvas.drawBitmap(mSwitch_thumb, mMoveX, mPadding, mPaintBg);
+        }
     }
 
     //阻止父组件对事件的响应，父组件不能响应 action包括action_up action_down action_move
@@ -239,19 +299,11 @@ public class SwitchButton extends View {
         }
     }
 
-    public int getSwitchStatus() {
-        return switchStatus;
-    }
-
-    public void setOnSwitchChangeListener(OnSwitchChangeListener mListener) {
-        this.mListener = mListener;
-    }
-
     public interface OnSwitchChangeListener {
         /**
          * 状态变化监听
          *
-         * @param status 1开启 0关闭
+         * @param status 1（SWITCH_ON）开启 0     （SWITCH_OFF）关闭
          */
         void onSwitch(int status);
     }
