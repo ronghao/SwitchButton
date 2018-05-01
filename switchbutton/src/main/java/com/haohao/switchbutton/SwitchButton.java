@@ -28,7 +28,7 @@ public class SwitchButton extends View {
     public static final int SWITCH_ON = 1;
     //滚动状态
     public static final int SWITCH_SCROLING = 2;
-    //不可以状态
+    //不可用状态
     public static final int SWITCH_UNENABLE = 3;
     //当前状态
     private int switchStatus = SWITCH_OFF;
@@ -148,7 +148,7 @@ public class SwitchButton extends View {
     /**
      * 获取开关当前状态
      *
-     * @return {@value SWITCH_ON,SWITCH_OFF, SWITCH_UNENABLE}
+     * @return 0关闭 1打开 2不可用
      */
     public int getSwitchStatus() {
         if (!isEnable) {
