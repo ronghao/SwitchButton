@@ -167,21 +167,21 @@ public class SwitchButton extends View {
     }
 
     /**
-     * 设置是否可用
-     *
-     * @param isEnable 可选择为true 不可选择为false
-     */
-    public void setSwitchEnabled(boolean isEnable) {
-        this.isEnable = isEnable;
-    }
-
-    /**
      * 获取是否可用
      *
      * @return 可选择为true 不可选择为false
      */
     public boolean getSwitchEnabled() {
         return this.isEnable;
+    }
+
+    /**
+     * 设置是否可用
+     *
+     * @param isEnable 可选择为true 不可选择为false
+     */
+    public void setSwitchEnabled(boolean isEnable) {
+        this.isEnable = isEnable;
     }
 
     public void toggle() {

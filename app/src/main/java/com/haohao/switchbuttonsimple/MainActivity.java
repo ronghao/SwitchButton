@@ -5,9 +5,12 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
 import com.haohao.switchbutton.SwitchButton;
 
-/* *
-* name:主界面
-*/
+/**
+ * 主界面
+ *
+ * @author haohao(ronghao3508@gmail.com) on 2018/5/1 15:10
+ * @version v1.0
+ */
 public class MainActivity extends FragmentActivity {
     private SwitchButton mSwitchButton;
     private TextView mSwitchText;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="switchbutton">
-        <attr name="switchbackground" format="reference|color"/>
-        <attr name="switchcursor" format="reference|color"/>
-    </declare-styleable>
+  <declare-styleable name="switchbutton">
+    <attr format="reference|color" name="switchbackground"/>
+    <attr format="reference|color" name="switchcursor"/>
+  </declare-styleable>
 </resources>
