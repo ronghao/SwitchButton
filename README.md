@@ -24,7 +24,7 @@
 在项目build.gradle中添加
 
 	dependencies {
-	    compile 'com.github.ronghao:SwitchButton:1.0.0'
+	    compile 'com.github.ronghao:SwitchButton:1.0.5'
 	}
 
 # XML代码
@@ -56,6 +56,8 @@
 
 
 # 版本
+- 1.0.5
+	- 添加类似IOS 滑动选择效果
 - 1.0.1
 	- 添加不可用设置
 - 1.0.0
