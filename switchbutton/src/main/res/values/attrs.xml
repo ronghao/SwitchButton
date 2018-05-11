@@ -4,4 +4,17 @@
     <attr format="reference|color" name="switchbackground"/>
     <attr format="reference|color" name="switchcursor"/>
   </declare-styleable>
+
+  <declare-styleable name="IOSSwitchView">
+    <attr format="boolean" name="hasShadow"/>
+    <attr format="color" name="primaryColor"/>
+    <attr format="color" name="primaryColorDark"/>
+    <attr format="color" name="offColor"/>
+    <attr format="color" name="offColorDark"/>
+    <attr format="color" name="shadowColor"/>
+    <attr format="float" name="ratioAspect"/>
+    <attr format="boolean" name="isOpened"/>
+    <attr format="boolean" name="isEnable"/>
+  </declare-styleable>
+
 </resources>
